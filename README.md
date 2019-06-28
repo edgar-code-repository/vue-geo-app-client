@@ -1,29 +1,32 @@
-# vue-geo-app-client
+THE (VUE) GEO APP CLIENT
+--------------------------------------------------------------------------------------------------------------------
 
-## Project setup
-```
-npm install
-```
+Aplicación SPA desarrollada con Vue 3 que almacena información de continentes, países y ciudades.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+La aplicación utiliza axios para conectarse a una API Rest desarrollada con Spring Boot y que permite almacenar la información en MongoDB:
 
-### Compiles and minifies for production
-```
-npm run build
-```
+https://github.com/edgar-code-repository/spring-boot-rest-geo-api
 
-### Run your tests
-```
-npm run test
-```
+--------------------------------------------------------------------------------------------------------------------
 
-### Lints and fixes files
-```
-npm run lint
-```
+Pantalla principal:
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+![Screenshot Main](screenshots/vue_main_page.png)
+
+--------------------------------------------------------------------------------------------------------------------
+
+Pantalla principal de CRUD de continentes:
+
+![Screenshot Continentes](screenshots/vue_main_continents.png)
+
+--------------------------------------------------------------------------------------------------------------------
+
+Pantalla principal de CRUD de paises:
+
+![Screenshot Paises](screenshots/vue_main_countries.png)
+
+--------------------------------------------------------------------------------------------------------------------
+
+Pantalla principal de CRUD de ciudades:
+
+![Screenshot Ciudades](screenshots/vue_main_cities.png)
