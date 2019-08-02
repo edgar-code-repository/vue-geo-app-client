@@ -69,7 +69,7 @@ export default {
   },
   created() {
     axios
-      .get("http://localhost:5501/continents")
+      .get(process.env.VUE_APP_CONTINENTS_API_URL)
       .then(response => {
         this.continentsList = response.data;
         this.flagError = false;
@@ -92,14 +92,11 @@ export default {
         return;
       } else {
         const newCountry = {
-          name: this.country_name
+          name: this.country_name,
+          continent: this.continent_selected
         };
 
-        const apiUrl =
-          "http://localhost:5501/continents/" +
-          this.continent_selected +
-          "/countries";
-
+        const apiUrl = process.env.VUE_APP_COUNTRIES_API_URL + "/";
         axios
           .post(apiUrl, newCountry)
           .then(response => {

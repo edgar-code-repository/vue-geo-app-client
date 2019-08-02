@@ -17,5 +17,8 @@ export default {
 </script>
 
 <style>
-
+.img-loading-size-class {
+    width: 150px;
+    min-height: 150px;
+}
 </style>

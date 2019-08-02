@@ -71,7 +71,7 @@ export default {
   methods: {
     loadContinents() {
       axios
-        .get("http://localhost:5501/continents")
+        .get(process.env.VUE_APP_CONTINENTS_API_URL)
         .then(response => {
           this.continentsList = response.data;
           this.flagError = false;
@@ -83,10 +83,7 @@ export default {
     },
     deleteContinent(continentId) {
       if (confirm("Are you sure you want to delete selected continent?")) {
-        const apiUrl =
-          "http://localhost:5501/continents/" +
-          continentId;
-
+        const apiUrl = process.env.VUE_APP_CONTINENTS_API_URL + "/" + continentId;
         axios
           .delete(apiUrl)
           .then(response => {

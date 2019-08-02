@@ -43,7 +43,7 @@ export default {
   },
   created() {
     axios
-      .get("http://localhost:5501/continents/" + this.continentId)
+      .get(process.env.VUE_APP_CONTINENTS_API_URL + "/" + this.continentId)
       .then(response => {
         this.continent_name = response.data.name;
         this.flagError = false;
@@ -68,7 +68,7 @@ export default {
         }
 
         axios
-          .put("http://localhost:5501/continents/" + this.continentId, selectedContinent)
+          .put(process.env.VUE_APP_CONTINENTS_API_URL + "/" + this.continentId + "/", selectedContinent)
           .then(response => {
             this.flagError = false;
             this.error = "";

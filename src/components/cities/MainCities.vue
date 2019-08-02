@@ -1,11 +1,11 @@
 <template>
-  <div class="container" v-if="flagError">
+  <div class="container" v-if="isLoading">
     <div class="row">
       <div class="panel panel-danger">
-        <div class="panel-heading">Error</div>
+        <div class="panel-heading">Countries</div>
         <div class="panel-body">
-          {{ error }}            
-          <br /><br />
+          <img src="@/assets/images/loading3.gif" alt="Loading" class="img-loading-size-class center-block" />
+          <br><br>
           <router-link to="/">
             <input type="button" value="Main" class="btn btn-primary" />&nbsp;
           </router-link>
@@ -14,7 +14,19 @@
     </div>
   </div>
   <div class="container" v-else>
-    <div class="row">
+    <div class="row" v-if="error">
+      <div class="panel panel-danger">
+        <div class="panel-heading">Error</div>
+        <div class="panel-body">
+          {{ error }}
+          <br><br>
+          <router-link to="/">
+            <input type="button" value="Main" class="btn btn-primary" />&nbsp;
+          </router-link>
+        </div>
+      </div>
+    </div>
+    <div class="row" v-else>
       <div class="panel panel-success">
         <div class="panel-heading">Cities</div>
         <div class="panel-body">
@@ -30,7 +42,7 @@
             <tbody>
               <tr v-for="cityItem in citiesList" v-bind:key="cityItem.id">
                 <td>{{ cityItem.name }}</td>
-                <td>{{ cityItem.country.name }}</td>
+                <td>{{ cityItem.countryName }}</td>
                 <td><input type="button" value="Edit" class="btn btn-warning" @click="editCity(cityItem.id)" /></td>
                 <td><input type="button" value="Delete" class="btn btn-danger" @click="deleteCity(cityItem.id)" /></td>
               </tr>              
@@ -53,6 +65,7 @@
       </div>
     </div>      
   </div>
+
 </template>
 
 <script>
@@ -64,19 +77,42 @@ export default {
     return {
       citiesList: [],
       error: "",
-      flagError: false
+      flagError: false,
+      isLoading: true
     };
   },
   created() {
+    this.isLoading = true;
     this.loadCities();
   },
   methods: {
     loadCities() {
+      this.isLoading = true;
       axios
-        .get("http://localhost:5501/cities")
+        .get(process.env.VUE_APP_CITIES_API_URL)
         .then(response => {
           this.citiesList = response.data;
-          this.flagError = false;
+          let listLength = this.citiesList.length;
+          let counter = 0;
+          
+          this.citiesList.forEach((city) => {
+            axios
+              .get(process.env.VUE_APP_COUNTRIES_API_URL + "/" + city.country)
+              .then(responseCountry => {
+                counter++;
+                city.countryName = responseCountry.data.name;
+                this.flagError = false;
+                if (counter == listLength) {
+                  this.isLoading = false;
+                }
+              })
+              .catch(errorGetById => {
+                this.flagError = true;
+                this.isLoading = false;
+                this.error = errorGetById.message;
+              });
+          }); 
+
         })
         .catch(errorGet => {
           this.flagError = true;
@@ -85,10 +121,7 @@ export default {
     },
     deleteCity(cityId) {
       if (confirm("Are you sure you want to delete selected city?")) {
-        const apiUrl =
-          "http://localhost:5501/cities/" +
-          cityId;
-
+        const apiUrl = process.env.VUE_APP_CITIES_API_URL + "/" + cityId;
         axios
           .delete(apiUrl)
           .then(response => {

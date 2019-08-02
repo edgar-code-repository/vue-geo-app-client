@@ -53,7 +53,7 @@ export default {
         }
 
         axios
-          .post("http://localhost:5501/continents", newContinent)
+          .post(process.env.VUE_APP_CONTINENTS_API_URL + "/", newContinent)
           .then(response => {
             this.flagError = false;
             this.error = "";

@@ -50,7 +50,7 @@ export default {
     }
   },
   created() {
-    axios.get("http://localhost:5501/countries")
+    axios.get(process.env.VUE_APP_COUNTRIES_API_URL)
       .then(response => {
         this.countriesList = response.data;
         this.flagError = false;
@@ -61,10 +61,10 @@ export default {
         this.error = errorGet.message;
       });
 
-    axios.get("http://localhost:5501/cities/" + this.city_id)
+    axios.get(process.env.VUE_APP_CITIES_API_URL + "/" + this.city_id)
       .then(response => {
         this.city_name = response.data.name;
-        this.country_selected = response.data.country.id;
+        this.country_selected = response.data.country;
         this.flagError = false;
         this.error = "";
       })
@@ -88,10 +88,11 @@ export default {
       }
       else {
         const selectedCity = {
-          name: this.city_name
+          name: this.city_name,
+          country: this.country_selected
         }
 
-        const apiUrl = "http://localhost:5501/countries/" + this.country_selected + "/cities/" + this.city_id;
+        const apiUrl = process.env.VUE_APP_CITIES_API_URL + "/" + this.city_id + "/";
         
         axios.put(apiUrl, selectedCity)
           .then(response => {

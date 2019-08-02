@@ -1,6 +1,33 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="isLoading">
     <div class="row">
+      <div class="panel panel-danger">
+        <div class="panel-heading">Countries</div>
+        <div class="panel-body">
+          <img src="@/assets/images/loading3.gif" alt="Loading" class="img-loading-size-class center-block" />
+          <br><br>
+          <router-link to="/">
+            <input type="button" value="Main" class="btn btn-primary" />&nbsp;
+          </router-link>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" v-else>
+    <div class="row" v-if="error">
+      <div class="panel panel-danger">
+        <div class="panel-heading">Error</div>
+        <div class="panel-body">
+          {{ error }}
+          <br><br>
+          <router-link to="/">
+            <input type="button" value="Main" class="btn btn-primary" />&nbsp;
+          </router-link>
+        </div>
+      </div>
+    </div>    
+    <div class="row" v-else>
       <div class="panel panel-default">
         <div class="panel-heading">Edit Country</div>
         <div class="panel-body">
@@ -51,6 +78,7 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -60,6 +88,7 @@ export default {
   name: "EditCountry",
   data() {
     return {
+      isLoading: true,
       flagError: false,
       error: "",
       continentsList: [],
@@ -69,8 +98,9 @@ export default {
     };
   },
   created() {
+    this.isLoading = true;
     axios
-      .get("http://localhost:5501/continents")
+      .get(process.env.VUE_APP_CONTINENTS_API_URL)
       .then(response => {
         this.continentsList = response.data;
         this.flagError = false;
@@ -78,20 +108,26 @@ export default {
       .catch(errorGet => {
         this.flagError = true;
         this.error = errorGet.message;
+        this.isLoading = false;
       });
 
-    axios
-      .get("http://localhost:5501/countries/" + this.country_id)
-      .then(response => {
-        this.country_name = response.data.name;
-        this.continent_selected = response.data.continent.id;
-        this.flagError = false;
-        this.error = "";
-      })
-      .catch(errorPost => {
-        this.flagError = true;
-        this.error = errorPost.message;
-      });
+    if (!this.flagError) {
+      axios
+        .get(process.env.VUE_APP_COUNTRIES_API_URL + "/" + this.country_id)
+        .then(response => {
+          //let continentId = response.data.continent.split("/")[4];
+          this.country_name = response.data.name;
+          this.continent_selected = response.data.continent;
+          this.flagError = false;
+          this.error = "";
+          this.isLoading = false;
+        })
+        .catch(errorPost => {
+          this.flagError = true;
+          this.error = errorPost.message;
+          this.isLoading = false;
+        });
+    }
   },
   methods: {
     saveCountry() {
@@ -104,17 +140,15 @@ export default {
         this.flagError = true;
         this.error = "Must indicate continent";
         return;
-      } else {
+      } 
+      else {
         const selectedCountry = {
           id: this.country_id,
-          name: this.country_name
+          name: this.country_name,
+          continent: this.continent_selected
         };
 
-        const apiUrl =
-          "http://localhost:5501/continents/" +
-          this.continent_selected +
-          "/countries/" +
-          this.country_id;
+        const apiUrl = process.env.VUE_APP_COUNTRIES_API_URL + "/" + this.country_id + "/";
 
         axios
           .put(apiUrl, selectedCountry)
