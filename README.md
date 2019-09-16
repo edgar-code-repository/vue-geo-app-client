@@ -1,7 +1,7 @@
 THE (VUE) GEO APP CLIENT
 --------------------------------------------------------------------------------------------------------------------
 
-Aplicación SPA desarrollada con Vue 3 que almacena información de continentes, países y ciudades.
+Aplicación SPA desarrollada con Vue 2.6 que almacena información de continentes, países y ciudades.
 
 La aplicación utiliza axios para conectarse a una API Rest desarrollada con Django Rest Framework 
 y que permite almacenar la información en MongoDB.
